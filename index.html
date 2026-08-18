@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spectrum — GTM Engine Fractal Map</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:'Helvetica Neue',-apple-system,BlinkMacSystemFont,sans-serif;background:#faf8f5;color:#1a1d23;overflow:hidden}
+  header{padding:14px 24px 11px;border-bottom:1px solid #ececec;background:#fff;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  header h1{font-family:Georgia,serif;font-size:19px;margin:0;font-weight:600}
+  header .sub{color:#8a8a8a;font-size:12.5px}
+  .controls{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .btn{font:inherit;font-size:12px;padding:6px 11px;border:1px solid #e2e2e2;background:#fff;color:#444;border-radius:7px;cursor:pointer}
+  .btn:hover{background:#faf6f3;border-color:#e0c3b1;color:#C0490A}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:8px 24px;border-bottom:1px solid #f0f0f0;background:#fcfcfc}
+  .legend span{font-size:11.5px;color:#666;display:flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  #canvas{position:absolute;inset:0;top:0;cursor:grab}
+  #canvas.dragging{cursor:grabbing}
+  #stage{position:absolute;left:0;top:0;transform-origin:0 0}
+  svg.links{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+  .node{position:absolute;width:250px;padding:7px 11px;border-radius:9px;background:#fff;border:1px solid #e6e6e6;border-left-width:4px;box-shadow:0 1px 3px rgba(0,0,0,.05);cursor:pointer;user-select:none;transition:box-shadow .12s}
+  .node:hover{box-shadow:0 3px 10px rgba(0,0,0,.12)}
+  .node .name{font-size:12.5px;font-weight:600;line-height:1.25}
+  .node .note{font-size:10.5px;color:#8a8a8a;margin-top:2px}
+  .node.root{background:#1a1d23;border-color:#1a1d23;color:#fff;width:210px;text-align:center}
+  .node.root .name{font-family:Georgia,serif;font-size:14px}
+  .node.region .name{font-size:13.5px;font-family:Georgia,serif}
+  .badge{position:absolute;right:-9px;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;color:#777;border-radius:10px;font-size:10px;padding:1px 6px;font-weight:600}
+  .hint{position:absolute;bottom:12px;left:24px;font-size:11px;color:#b0b0b0}
+  #bowtie{position:relative;z-index:3;background:#fff;border-bottom:1px solid #ececec;padding:6px 24px 4px}
+  #bowtie svg{max-width:960px;display:block;margin:0 auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>Spectrum — The GTM Engine</h1>
+  <span class="sub">the bowtie, whole · left → knot → right, plus partners and the two bets</span>
+  <div class="controls">
+    <button class="btn" id="expandAll">Expand all</button>
+    <button class="btn" id="collapse">Collapse to regions</button>
+    <button class="btn" id="reset">Reset view</button>
+  </div>
+</header>
+<div class="legend" id="legend"></div>
+<div id="bowtie">
+  <svg viewBox="0 0 1000 132" preserveAspectRatio="xMidYMid meet" width="100%" height="132">
+    <!-- bowtie funnel shapes -->
+    <polygon points="70,66 350,20 350,112" fill="#C0490A" fill-opacity="0.12" stroke="#C0490A" stroke-width="1.5"/>
+    <rect x="430" y="46" width="140" height="40" rx="7" fill="#B0870A" fill-opacity="0.16" stroke="#B0870A" stroke-width="1.5"/>
+    <polygon points="930,66 650,20 650,112" fill="#2E7D32" fill-opacity="0.12" stroke="#2E7D32" stroke-width="1.5"/>
+    <!-- labels: left -->
+    <text x="210" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="15" fill="#C0490A" font-weight="600">LEFT · acquire</text>
+    <text x="210" y="80" text-anchor="middle" font-size="10.5" fill="#8a6a55">Outbound · Inbound · Partner-in · Events</text>
+    <!-- knot -->
+    <text x="500" y="62" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#B0870A" font-weight="600">KNOT</text>
+    <text x="500" y="77" text-anchor="middle" font-size="9.5" fill="#98812f">closed-won</text>
+    <!-- right -->
+    <text x="790" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="15" fill="#2E7D32" font-weight="600">RIGHT · retain &amp; grow</text>
+    <text x="790" y="80" text-anchor="middle" font-size="10.5" fill="#4a7d4d">Land · Adopt · Expand · Renew</text>
+    <!-- wrappers top -->
+    <text x="500" y="15" text-anchor="middle" font-size="11" fill="#6C47FF" font-weight="600">PARTNERS — the parallel machine (breadth &amp; scale)</text>
+    <!-- wrapper bottom -->
+    <text x="500" y="128" text-anchor="middle" font-size="11" fill="#0E7C86" font-weight="600">THE BETS — Mining &amp; Ports (where the engine gets proven)</text>
+    <!-- flow arrows -->
+    <path d="M352,66 L428,66" stroke="#999" stroke-width="1.4" marker-end="url(#ar)"/>
+    <path d="M572,66 L648,66" stroke="#999" stroke-width="1.4" marker-end="url(#ar)"/>
+    <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#999"/></marker></defs>
+  </svg>
+</div>
+<div id="canvas">
+  <div id="stage"><svg class="links" id="links"></svg></div>
+  <div class="hint">Click a node to expand / collapse · scroll to zoom · drag the background to pan</div>
+</div>
+
+<script>
+const ZONES=[
+  {name:"Left — acquire",color:"#C0490A"},
+  {name:"Knot — convert",color:"#B0870A"},
+  {name:"Right — retain & grow (LEAR)",color:"#2E7D32"},
+  {name:"Partners",color:"#6C47FF"},
+  {name:"The bets",color:"#0E7C86"}
+];
+const L="#C0490A", K="#B0870A", R="#2E7D32", P="#6C47FF", V="#0E7C86";
+
+const DATA={
+  name:"Spectrum GTM Engine", root:true,
+  children:[
+    {name:"LEFT — acquire", note:"create & capture demand", color:L, region:true, children:[
+      {name:"Three doors", c:true, children:[
+        {name:"Outbound — we reach out first", children:[
+          {name:"Dock Radar (signal-led, cross-vertical)"},
+          {name:"Vertical ABM (thesis-led, per vertical)"},
+          {name:"Terrain map (operators vs SIs · the anchor · GIS & common tools)"},
+          {name:"Warm outbound = expansion (intros · CSX departments · global footprint)"}
+        ]},
+        {name:"Inbound — demand comes to us (web · search · content · events)"},
+        {name:"Partner pipeline — tree/fruit partners bring us their deals"}
+      ]},
+      {name:"The sort — type × potential", note:"where focus lives", children:[
+        {name:"What is it: SME · Enterprise · Partner"},
+        {name:"How much potential"}
+      ]},
+      {name:"Three routes", c:true, children:[
+        {name:"SME → deflect to a capable partner (feeds the partner)"},
+        {name:"Enterprise → we own it (the flagships)"},
+        {name:"Partner → into the enablement machine"}
+      ]}
+    ]},
+    {name:"KNOT — convert", note:"qualified opportunity → won", color:K, region:true, children:[
+      {name:"Conversion path", children:[
+        {name:"Discovery"},
+        {name:"Solutioning & demo"},
+        {name:"Proposal & pricing"},
+        {name:"Proof / POC / trial"},
+        {name:"Negotiate & close"}
+      ]},
+      {name:"The docket — the vertical selling kit", note:"factory: a win → reusable material", children:[
+        {name:"Use-case one-pagers (buyer's language)"},
+        {name:"Anchor case studies with real numbers"},
+        {name:"Demo · proposal · pricing"},
+        {name:"Objections & who we displace"},
+        {name:"First two: Mining & Ports"}
+      ]},
+      {name:"Two motions: direct (we run it) · partner co-sell (assist)"}
+    ]},
+    {name:"RIGHT — retain & grow", note:"LEAR · gates, not tracks", color:R, region:true, children:[
+      {name:"Land — clean handoff", note:"nothing dropped; write down contract scope"},
+      {name:"Adopt — the decisive stage & the sensor", children:[
+        {name:"Onboarding → first flight → go-live"},
+        {name:"Health as the standing job"},
+        {name:"Success plan (their definition of success)"},
+        {name:"Sensor: capture field intelligence", c:true, children:[
+          {name:"→ Solution handbooks (per vertical)"},
+          {name:"→ Enablement library + training (push what customers don't know we do)"},
+          {name:"→ Product build priorities"},
+          {name:"→ Feedback to the knot & outbound"}
+        ]}
+      ]},
+      {name:"Expand — where NRR is made", note:"health-gated · workshops as the vehicle"},
+      {name:"Renew — hold the floor", note:"tripwires quietly · secure base · seeded upsell only"}
+    ]},
+    {name:"PARTNERS — the parallel machine", note:"breadth & scale", color:P, region:true, children:[
+      {name:"Tier: seed→sprout→tree→fruit (focus tree/fruit) · L1/L2"},
+      {name:"Co-sell — assist closing their live deals", note:"tree/fruit first; don't babysit dormant"},
+      {name:"Enablement — onboard the partner's team", note:"north star: deals closed without us on the call", c:true, children:[
+        {name:"Like onboarding a partner's sales + product team"},
+        {name:"Monthly recorded online sessions", children:[
+          {name:"Use-case sessions"},
+          {name:"Product / feature deep-dives"},
+          {name:"Sales training (how to pitch & displace)"}
+        ]},
+        {name:"Partner handbooks + feature videos (from the sensor)"},
+        {name:"Certification / readiness check"},
+        {name:"Same engine → end users (TOFU + adoption)"},
+        {name:"Everything flows into Ravi's partner cockpit"}
+      ]},
+      {name:"The loop: deflected SMEs → capable partners → the third door"}
+    ]},
+    {name:"THE BETS — Mining & Ports", note:"a bet = a thin slice through the whole engine, run as an experiment", color:V, region:true, children:[
+      {name:"Same 5-part plan for both", note:"the repeatable playbook the next vertical inherits", c:true, children:[
+        {name:"1 · Terrain & personas"},
+        {name:"2 · Named lists (design partners)"},
+        {name:"3 · Top-of-funnel (events + webinars)"},
+        {name:"4 · The offer (wedge + docket)"},
+        {name:"5 · Carve-out bar (proven?)"}
+      ]},
+      {name:"Mining (bet 1)", c:true, children:[
+        {name:"1 · Terrain & personas", children:[
+          {name:"Operators (in-house drone teams) vs SIs"},
+          {name:"The anchor: the 'Terabase of mining' (Akara proof)"},
+          {name:"SI persona → feeds outbound"},
+          {name:"Common tools/systems (GIS)"}
+        ]},
+        {name:"2 · Named lists — work closely with", children:[
+          {name:"Top end-users (priority): FQM · Anglo/Quellaveco · SQM"},
+          {name:"Top partners/SIs: GoUAV · FS Systems · DC Geomatics"},
+          {name:"Deep discovery → find pain points → product + docket"}
+        ]},
+        {name:"3 · Top-of-funnel", children:[
+          {name:"EDR-of-mining events (per geography)", children:[
+            {name:"Mining Indaba — Africa (Cape Town, Feb)"},
+            {name:"Expomin — LATAM (Santiago, Chile)"},
+            {name:"IMARC — Australia"},
+            {name:"pre-ABM · booth · meetings off wedge · post-ABM"}
+          ]},
+          {name:"Use-case webinars / learning sessions (recurring TOFU)"},
+          {name:"Use-case training that generates inbound"}
+        ]},
+        {name:"4 · The offer", children:[
+          {name:"Wedge: security patrol · open-pit stockpile volumetrics"},
+          {name:"Docket: one-pagers · anchor case study · objections"},
+          {name:"Readiness gate: do we have a deliverable solution?"},
+          {name:"open-pit ≠ shaft (ref is open-pit)"}
+        ]},
+        {name:"5 · Carve-out bar", note:"metric + go/no-go later", children:[
+          {name:"flagships live · mature partners · docket · the event · written playbook"}
+        ]}
+      ]},
+      {name:"Ports (bet 2)", c:true, children:[
+        {name:"1 · Terrain & personas", children:[
+          {name:"Operators vs SIs · automation is the wave"},
+          {name:"The anchor: MPA/Skyports (Singapore)"},
+          {name:"SI persona → feeds outbound"},
+          {name:"Common tools/systems"}
+        ]},
+        {name:"2 · Named lists — work closely with", children:[
+          {name:"Top end-users (priority): MPA/Skyports · TMA · Bintulu"},
+          {name:"Top partners/SIs: Aerodyne · local operators"},
+          {name:"Deep discovery → find pain points → product + docket"}
+        ]},
+        {name:"3 · Top-of-funnel", children:[
+          {name:"EDR-of-ports events", children:[
+            {name:"TOC Singapore — primary (MPA's turf, Nov)"},
+            {name:"TOC Europe (May)"},
+            {name:"Singapore Maritime Week (relationship event)"},
+            {name:"pre-ABM · booth · meetings off wedge · post-ABM"}
+          ]},
+          {name:"Use-case webinars (ports) — TOFU"},
+          {name:"Use-case training that generates inbound"}
+        ]},
+        {name:"4 · The offer", children:[
+          {name:"Wedge: incident response · fairway · AIS · perimeter"},
+          {name:"Docket: one-pagers · anchor case study · objections"},
+          {name:"Readiness gate: deliverable solution? (ship AIS Flink / Cockpit)"},
+          {name:"Mostly public buyers → RFI / tender cycles"}
+        ]},
+        {name:"5 · Carve-out bar", note:"metric + go/no-go later", children:[
+          {name:"flagships live · mature partners · docket · the event · written playbook"}
+        ]}
+      ]},
+      {name:"The content loop", note:"one engine, three uses", children:[
+        {name:"webinars/training built here = partner enablement = adoption content"}
+      ]}
+    ]}
+  ]
+};
+
+const NODE_W=250, COL_GAP=304, GAP=16, REGION_GAP=46, MX=40, MY=30;
+const stage=document.getElementById('stage'), canvas=document.getElementById('canvas'), svg=document.getElementById('links');
+
+function estH(node){
+  const nameLines=Math.max(1,Math.ceil((node.name||'').length/30));
+  const noteLines=node.note?Math.max(1,Math.ceil(node.note.length/38)):0;
+  return 16+nameLines*16+noteLines*13;
+}
+
+(function init(node,parent){ node.parent=parent; node.color=node.root?"#1a1d23":(node.color||parent.color);
+  (node.children||[]).forEach(c=>init(c,node)); })(DATA,null);
+
+const legend=document.getElementById('legend');
+ZONES.forEach(z=>{ const s=document.createElement('span'); s.innerHTML=`<span class="dot" style="background:${z.color}"></span>${z.name}`; legend.appendChild(s); });
+
+function layout(){
+  let cursor=MY; const visible=[];
+  (function assign(node,depth){
+    visible.push(node); node.x=MX+depth*COL_GAP;
+    const kids=node._collapsed?[]:(node.children||[]);
+    if(!kids.length){ const h=estH(node); node.y=cursor+h/2; cursor+=h+GAP; }
+    else { kids.forEach((k,i)=>{ if(depth===0 && i>0) cursor+=REGION_GAP; assign(k,depth+1); }); node.y=(kids[0].y+kids[kids.length-1].y)/2; }
+  })(DATA,0);
+  return visible;
+}
+
+function render(){
+  const visible=layout();
+  let maxX=0,maxY=0; visible.forEach(n=>{ maxX=Math.max(maxX,n.x+NODE_W); maxY=Math.max(maxY,n.y); });
+  const W=maxX+MX, H=maxY+MY;
+  stage.style.width=W+'px'; stage.style.height=H+'px'; svg.setAttribute('width',W); svg.setAttribute('height',H);
+  let paths='';
+  visible.forEach(n=>{ if(!n.parent) return;
+    const x1=n.parent.x+NODE_W, y1=n.parent.y, x2=n.x, y2=n.y, mx=(x1+x2)/2;
+    paths+=`<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="${n.color}" stroke-opacity="0.4" stroke-width="1.6"/>`;
+  });
+  svg.innerHTML=paths;
+  [...stage.querySelectorAll('.node')].forEach(e=>e.remove());
+  visible.forEach(n=>{
+    const d=document.createElement('div');
+    d.className='node'+(n.root?' root':'')+(n.region?' region':'');
+    d.style.left=n.x+'px'; d.style.top=n.y+'px'; d.style.transform='translateY(-50%)';
+    if(!n.root) d.style.borderLeftColor=n.color;
+    d.innerHTML=`<div class="name">${n.name}</div>`+(n.note?`<div class="note">${n.note}</div>`:'');
+    if(n.children&&n.children.length&&n._collapsed){ const b=document.createElement('span'); b.className='badge'; b.textContent='+'+n.children.length; d.appendChild(b); }
+    d.addEventListener('click',ev=>{ ev.stopPropagation(); if(n.children&&n.children.length){ n._collapsed=!n._collapsed; render(); } });
+    stage.appendChild(d);
+  });
+}
+
+function setDefaults(){ (function walk(n){ n._collapsed=!!n.c; (n.children||[]).forEach(walk); })(DATA); }
+function setAll(v){ (function walk(n){ if(n.children&&n.children.length) n._collapsed=v; (n.children||[]).forEach(walk); })(DATA); }
+function collapseRegions(){ (function walk(n,depth){ if(n.children&&n.children.length) n._collapsed = depth>=1; (n.children||[]).forEach(c=>walk(c,depth+1)); })(DATA,0); }
+
+let scale=1, tx=24, ty=8;
+function applyT(){ stage.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`; }
+canvas.addEventListener('wheel',e=>{ e.preventDefault();
+  const rect=canvas.getBoundingClientRect(), mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  const ns=Math.min(2.2,Math.max(0.25,scale*(1-e.deltaY*0.0015)));
+  tx=mx-(mx-tx)*(ns/scale); ty=my-(my-ty)*(ns/scale); scale=ns; applyT();
+},{passive:false});
+let dragging=false,sx,sy;
+canvas.addEventListener('mousedown',e=>{ if(e.target.closest('.node'))return; dragging=true; canvas.classList.add('dragging'); sx=e.clientX-tx; sy=e.clientY-ty; });
+window.addEventListener('mousemove',e=>{ if(!dragging)return; tx=e.clientX-sx; ty=e.clientY-sy; applyT(); });
+window.addEventListener('mouseup',()=>{ dragging=false; canvas.classList.remove('dragging'); });
+
+document.getElementById('expandAll').onclick=()=>{ setAll(false); render(); };
+document.getElementById('collapse').onclick=()=>{ collapseRegions(); render(); };
+document.getElementById('reset').onclick=()=>{ setDefaults(); scale=1; tx=24; ty=8; applyT(); render(); };
+
+setDefaults(); render(); applyT();
+</script>
+</body>
+</html>
