@@ -48,9 +48,9 @@
 <div id="bowtie">
   <svg viewBox="0 0 1000 132" preserveAspectRatio="xMidYMid meet" width="100%" height="132">
     <!-- bowtie funnel shapes -->
-    <polygon points="70,66 350,20 350,112" fill="#C0490A" fill-opacity="0.12" stroke="#C0490A" stroke-width="1.5"/>
+    <polygon points="70,20 70,112 350,66" fill="#C0490A" fill-opacity="0.12" stroke="#C0490A" stroke-width="1.5"/>
     <rect x="430" y="46" width="140" height="40" rx="7" fill="#B0870A" fill-opacity="0.16" stroke="#B0870A" stroke-width="1.5"/>
-    <polygon points="930,66 650,20 650,112" fill="#2E7D32" fill-opacity="0.12" stroke="#2E7D32" stroke-width="1.5"/>
+    <polygon points="930,20 930,112 650,66" fill="#2E7D32" fill-opacity="0.12" stroke="#2E7D32" stroke-width="1.5"/>
     <!-- labels: left -->
     <text x="210" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="15" fill="#C0490A" font-weight="600">LEFT · acquire</text>
     <text x="210" y="80" text-anchor="middle" font-size="10.5" fill="#8a6a55">Outbound · Inbound · Partner-in · Events</text>
@@ -126,21 +126,58 @@ const DATA={
       ]},
       {name:"Two motions: direct (we run it) · partner co-sell (assist)"}
     ]},
-    {name:"RIGHT — retain & grow", note:"LEAR · gates, not tracks", color:R, region:true, children:[
-      {name:"Land — clean handoff", note:"nothing dropped; write down contract scope"},
-      {name:"Adopt — the decisive stage & the sensor", children:[
-        {name:"Onboarding → first flight → go-live"},
-        {name:"Health as the standing job"},
-        {name:"Success plan (their definition of success)"},
+    {name:"RIGHT — retain & grow", note:"LEAR · gates, not tracks · CS = Neel + Unnati", color:R, region:true, children:[
+      {name:"Land — clean handoff", note:"Unnati (Neel support)", children:[
+        {name:"Handoff: deal context · validate committed deliverables"},
+        {name:"Success plan — their definition of success"},
+        {name:"Stakeholder map (champion · economic buyer · blockers)"},
+        {name:"Write down contract scope (guards against false expansion)"},
+        {name:"Metric: won → onboarding-started · time-to-first-value"}
+      ]},
+      {name:"Adopt — the decisive stage & the sensor", note:"Unnati (Neel support)", children:[
+        {name:"Onboarding → first flight → go-live (5 milestones, 30d)"},
+        {name:"Health as the standing job (0-100 · exceptions only)"},
+        {name:"Adoption + license/credit utilisation · NPS/CSAT"},
         {name:"Sensor: capture field intelligence", c:true, children:[
           {name:"→ Solution handbooks (per vertical)"},
           {name:"→ Enablement library + training (push what customers don't know we do)"},
           {name:"→ Product build priorities"},
           {name:"→ Feedback to the knot & outbound"}
-        ]}
+        ]},
+        {name:"Metric: feature adoption rate · health"}
       ]},
-      {name:"Expand — where NRR is made", note:"health-gated · workshops as the vehicle"},
-      {name:"Renew — hold the floor", note:"tripwires quietly · secure base · seeded upsell only"}
+      {name:"Expand — where NRR is made", note:"Neel (Unnati support) · health-gated", c:true, children:[
+        {name:"SQM principle: engineer expansion, don't wait for it"},
+        {name:"Two gates: health + contract-execution ≠ expansion"},
+        {name:"8 levers", children:[
+          {name:"L1 more sites · L2 more use cases · L3 integrations/PS"},
+          {name:"L4 new departments · L5 partner · L6 plan upgrade"},
+          {name:"L7 APIs (per-call) · L8 AI links/credits"}
+        ]},
+        {name:"The 3-layer scan (per account)", note:"stack all three = engineer expansion", children:[
+          {name:"L1 Quantitative — usage/plan-limit → Lever 6"},
+          {name:"L2 Internal signal mining — email·calls·Slack·WA·tickets"},
+          {name:"L3 External research — sites·departments·systems·peers"}
+        ]},
+        {name:"Score → judgment → tier", children:[
+          {name:"Yes/Maybe/No per lever + evidence"},
+          {name:"Judgment: champion strength·timing·comp risk·health"},
+          {name:"Tier A ~$1M · B ~$500K · C ~$100-200K"}
+        ]},
+        {name:"Champion + exec sponsor (2nd champion = churn firewall)"},
+        {name:"Tech workshops as the vehicle (HF Sinclair pattern)"},
+        {name:"Reusable AI prompts (4): signal-mine · research · usage · sizing"},
+        {name:"To-done: opp logged + drafted next step (proactive-touchpoint)"},
+        {name:"Metric: expansion ARR / quarter · NRR"}
+      ]},
+      {name:"Renew — hold the floor", note:"Neel (Unnati support)", children:[
+        {name:"90 / 60 / 30 tripwires (date internal, never broadcast)"},
+        {name:"At-risk detection off the health engine → recovery plan"},
+        {name:"Secure base first (PO · dates · terms)"},
+        {name:"Value realisation — ROI narrative proves the renewal"},
+        {name:"Upsell only if seeded a quarter out (seed→structured→pre-warm→confirm)"},
+        {name:"Metric: renewal % · at-risk $ recovered"}
+      ]}
     ]},
     {name:"PARTNERS — the parallel machine", note:"breadth & scale", color:P, region:true, children:[
       {name:"Tier: seed→sprout→tree→fruit (focus tree/fruit) · L1/L2"},
