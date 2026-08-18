@@ -59,34 +59,54 @@
 </header>
 <div class="legend" id="legend"></div>
 <div id="bowtie">
-  <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" width="100%" height="150">
+  <svg viewBox="0 0 1100 300" preserveAspectRatio="xMidYMid meet" width="100%" height="212">
     <defs>
       <linearGradient id="gL" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#D95B28" stop-opacity="0.16"/><stop offset="1" stop-color="#D95B28" stop-opacity="0.04"/>
+        <stop offset="0" stop-color="#F0A574"/><stop offset="1" stop-color="#D95B28"/>
       </linearGradient>
       <linearGradient id="gR" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#3A7A65" stop-opacity="0.04"/><stop offset="1" stop-color="#3A7A65" stop-opacity="0.16"/>
+        <stop offset="0" stop-color="#3A7A65"/><stop offset="1" stop-color="#A6D0C2"/>
       </linearGradient>
-      <marker id="ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#B7B2AC"/></marker>
+      <path id="pLtop" d="M60,43 L452,81" fill="none"/>
+      <path id="pLbot" d="M60,277 L452,239" fill="none"/>
+      <path id="pRtop" d="M648,81 L1040,43" fill="none"/>
+      <path id="pRbot" d="M648,239 L1040,277" fill="none"/>
     </defs>
-    <!-- wrapper labels top/bottom -->
-    <text x="500" y="16" text-anchor="middle" font-family="Geist Mono,monospace" font-size="10.5" letter-spacing="1" fill="#334155">PARTNERS — THE PARALLEL MACHINE · breadth &amp; scale</text>
-    <!-- LEFT funnel: wide base far-left, point into knot -->
-    <polygon points="60,34 60,116 400,75" fill="url(#gL)" stroke="#D95B28" stroke-width="1.4"/>
-    <text x="220" y="70" text-anchor="middle" font-family="Lora,serif" font-size="16" fill="#D95B28" font-weight="600">LEFT · acquire</text>
-    <text x="220" y="90" text-anchor="middle" font-family="Geist Mono,monospace" font-size="9.5" letter-spacing=".5" fill="#8a6a55">OUTBOUND · INBOUND · PARTNER-IN · EVENTS</text>
-    <!-- KNOT -->
-    <rect x="452" y="55" width="96" height="40" fill="#111111"/>
-    <text x="500" y="72" text-anchor="middle" font-family="Lora,serif" font-size="12.5" fill="#fff" font-weight="600">KNOT</text>
-    <text x="500" y="86" text-anchor="middle" font-family="Geist Mono,monospace" font-size="8.5" letter-spacing=".5" fill="#cbb9a9">CLOSED-WON</text>
-    <!-- RIGHT funnel: point at knot, wide base far-right -->
-    <polygon points="940,34 940,116 600,75" fill="url(#gR)" stroke="#3A7A65" stroke-width="1.4"/>
-    <text x="780" y="70" text-anchor="middle" font-family="Lora,serif" font-size="16" fill="#3A7A65" font-weight="600">RIGHT · retain &amp; grow</text>
-    <text x="780" y="90" text-anchor="middle" font-family="Geist Mono,monospace" font-size="9.5" letter-spacing=".5" fill="#4a7d6d">LAND · ADOPT · EXPAND · RENEW</text>
-    <!-- flow arrows -->
-    <path d="M402,75 L448,75" stroke="#B7B2AC" stroke-width="1.4" marker-end="url(#ar)"/>
-    <path d="M552,75 L598,75" stroke="#B7B2AC" stroke-width="1.4" marker-end="url(#ar)"/>
-    <text x="500" y="140" text-anchor="middle" font-family="Geist Mono,monospace" font-size="10.5" letter-spacing="1" fill="#2F7D8A">THE BETS — MINING &amp; PORTS · where the engine gets proven</text>
+
+    <!-- wrapper captions -->
+    <text x="550" y="15" text-anchor="middle" font-family="Geist Mono,monospace" font-size="10.5" letter-spacing="1.5" fill="#334155">PARTNERS · THE PARALLEL MACHINE</text>
+    <text x="550" y="296" text-anchor="middle" font-family="Geist Mono,monospace" font-size="10.5" letter-spacing="1.5" fill="#2F7D8A">THE BETS · MINING &amp; PORTS</text>
+
+    <!-- LEFT funnel: wide outer-left, narrowing to knot -->
+    <polygon points="40,55 455,95 455,225 40,265" fill="url(#gL)"/>
+    <!-- RIGHT funnel: narrow at knot, widening outer-right -->
+    <polygon points="1060,55 645,95 645,225 1060,265" fill="url(#gR)"/>
+
+    <!-- knot circle -->
+    <circle cx="550" cy="160" r="106" fill="#F5F5F7"/>
+    <circle cx="550" cy="160" r="99" fill="#FFFFFF" stroke="#DDDFE3" stroke-width="1.5"/>
+    <text x="550" y="156" text-anchor="middle" font-family="Lora,serif" font-size="19" font-weight="600" fill="#111111">KNOT</text>
+    <text x="550" y="176" text-anchor="middle" font-family="Geist Mono,monospace" font-size="9" letter-spacing="1" fill="#6B7280">CLOSED-WON</text>
+
+    <!-- edge labels (curved along funnel edges) -->
+    <text font-family="Geist Mono,monospace" font-size="11" letter-spacing="1" font-weight="600" fill="#D95B28"><textPath href="#pLtop" startOffset="50%" text-anchor="middle">LEFT · ACQUIRE</textPath></text>
+    <text font-family="Geist Mono,monospace" font-size="9.5" letter-spacing=".8" fill="#8a7566"><textPath href="#pLbot" startOffset="50%" text-anchor="middle">SALES · NUPUR · KSHITIJ · ASHISH</textPath></text>
+    <text font-family="Geist Mono,monospace" font-size="11" letter-spacing="1" font-weight="600" fill="#3A7A65"><textPath href="#pRtop" startOffset="50%" text-anchor="middle">RIGHT · RETAIN &amp; GROW</textPath></text>
+    <text font-family="Geist Mono,monospace" font-size="9.5" letter-spacing=".8" fill="#5a8577"><textPath href="#pRbot" startOffset="50%" text-anchor="middle">CS · NEEL + UNNATI</textPath></text>
+
+    <!-- left stage chips -->
+    <g font-family="Geist,sans-serif" font-size="12.5" fill="#111111" text-anchor="middle">
+      <rect x="64" y="145" width="106" height="30" fill="#fff" stroke="#DDDFE3"/><text x="117" y="164">Outbound</text>
+      <rect x="182" y="145" width="106" height="30" fill="#fff" stroke="#DDDFE3"/><text x="235" y="164">Inbound</text>
+      <rect x="300" y="145" width="112" height="30" fill="#fff" stroke="#DDDFE3"/><text x="356" y="164">Partner-in</text>
+    </g>
+    <!-- right stage chips -->
+    <g font-family="Geist,sans-serif" font-size="12" fill="#111111" text-anchor="middle">
+      <rect x="660" y="145" width="86" height="30" fill="#fff" stroke="#DDDFE3"/><text x="703" y="164">Land</text>
+      <rect x="756" y="145" width="86" height="30" fill="#fff" stroke="#DDDFE3"/><text x="799" y="164">Adopt</text>
+      <rect x="852" y="145" width="88" height="30" fill="#fff" stroke="#DDDFE3"/><text x="896" y="164">Expand</text>
+      <rect x="950" y="145" width="88" height="30" fill="#fff" stroke="#DDDFE3"/><text x="994" y="164">Renew</text>
+    </g>
   </svg>
 </div>
 <div id="canvas">
